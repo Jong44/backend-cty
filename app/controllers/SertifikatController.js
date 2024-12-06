@@ -42,3 +42,57 @@ exports.createSertifikat = async (req, res) => {
     }
 }
 
+exports.getAllSertifikat = async (req, res) => {
+    try {
+        const data = await SertifikatService.getAllSertifikat();
+        if (data.length == 0) {
+            response = {
+                status: "success",
+                message: "No Sertifikat found",
+                data: []
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Sertifikat found",
+                data: data
+            }
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+
+exports.getSertifikatById = async (req, res) => {
+    try {
+        const data = await SertifikatService.getSertifikatById(req.params.id);
+        if (data.length === 0) {
+            response = {
+                status: "success",
+                message: "No Sertifikat found",
+                data: null
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Sertifikat found",
+                data: data?.[0]
+            }
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+

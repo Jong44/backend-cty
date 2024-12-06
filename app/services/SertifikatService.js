@@ -8,6 +8,22 @@ const createSertifikat = async (sertifikat) => {
     return data;
 }
 
+const getAllSertifikat = async () => {
+    const {data, error} = await supabase.from('sertifikat').select('*');
+
+    if (error) throw new Error(error.message);
+    return data;
+}
+
+const getSertifikatById = async (id) => {
+    const {data, error} = await supabase.from('sertifikat').select('*').eq('id_sertifikat', id);
+
+    if (error) throw new Error(error.message);
+    return data;
+}
+
 module.exports = {
-    createSertifikat
+    createSertifikat,
+    getAllSertifikat,
+    getSertifikatById
 }
