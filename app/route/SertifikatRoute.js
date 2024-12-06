@@ -6,5 +6,7 @@ router.post('/', SertifikatController.createSertifikat);
 router.get('/', SertifikatController.getAllSertifikat);
 router.get('/:id', SertifikatController.getSertifikatById);
 
+router.put('/:id', SertifikatController.updateUser);
+router.delete('/:id', SertifikatController.deleteUser);
 
 module.exports = router;
