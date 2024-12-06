@@ -8,6 +8,21 @@ const createSertifikat = async (sertifikat) => {
     return data;
 }
 
+const updateSertifikat = async (id, user) => {
+    const {data, error} = await supabase.from('sertifikat').update(sertifikat).eq('id_sertifikat', id);
+
+    if (error) throw new Error(error.message);
+    return data;
+}
+
+const deleteSertifikat = async (id) => {
+    const {data, error} = await supabase.from('sertifikat').delete().eq('id_sertifikat', id);
+
+    if (error) throw new Error(error.message);
+    return data;
+}
+
 module.exports = {
-    createSertifikat
+    updateSertifikat,
+    deleteSertifikat
 }

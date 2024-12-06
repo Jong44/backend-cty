@@ -42,3 +42,40 @@ exports.createSertifikat = async (req, res) => {
     }
 }
 
+exports.updateSertifikat = async (req, res) => {
+    try {
+        const data = await SertifikatService.updateSertifikat(req.params.id, req.body);
+        response = {
+            status: "success",
+            message: "Sertifikat updated",
+            data: data
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+
+exports.deleteSertifikat = async (req, res) => {
+    try {
+        const data = await SertifikatService.deleteSertifikat(req.params.id);
+        response = {
+            status: "success",
+            message: "Sertifikat deleted",
+            data: data
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
