@@ -13,9 +13,9 @@ Proyek ini menggunakan teknologi berikut:
 
 ## 👨‍💻 Tim Pengembang
 Tim ini dinamakan **C-Block**, terdiri dari:
-- **🧑‍💻 Tanjung** - Backend Developer
-- **🧑‍💻 Farhan** - Backend Developer
-- **🧑‍💻 Radian** - Backend Developer
+- **🧑‍💻 Tanjung** - @Jong44 - Backend Developer
+- **🧑‍💻 Farhan** - @Farhan-cuy - Backend Developer
+- **🧑‍💻 Radian** - @Raddhuha - Backend Developer
 
 ---
 
@@ -39,7 +39,7 @@ Pastikan Anda telah menginstal:
 1. Clone repositori:
    ```bash
    git clone https://github.com/username/c-ty.git
-   cd c-ty
+   cd backend-cty
 2. Instal dependencies:
    ```bash
    npm install
@@ -51,5 +51,8 @@ Pastikan Anda telah menginstal:
    ```bash
    npm start
 
+### 🔗 Frontend Repository
+Anda dapat mengakses repositori frontend proyek ini di sini:
+👉 [Frontend C-Ty Repository](https://github.com/Jong44/fronted_cty )
 
 
