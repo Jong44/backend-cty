@@ -38,7 +38,7 @@ Pastikan Anda telah menginstal:
 ### ⚙️ Langkah Instalasi
 1. Clone repositori:
    ```bash
-   git clone https://github.com/username/c-ty.git
+   git clone https://github.com/Jong44/backend-cty
    cd backend-cty
 2. Instal dependencies:
    ```bash
