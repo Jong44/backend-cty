@@ -3,7 +3,10 @@ const app = express();
 const AuthRoute=require('./route/AuthRoute');
 const bodyParser = require('body-parser');
 const UserRoute = require('./route/UserRoute');
-const SertifikatRoute = require('./route/SertfikatRoute');
+const SertifikatRoute = require('./route/SertifikatRoute');
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(bodyParser.urlencoded({
   extended: true

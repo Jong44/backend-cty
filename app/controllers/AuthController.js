@@ -1,4 +1,11 @@
 const AuthServices = require('../services/AuthServices')
+const UserServices = require('../services/UserService')
+
+let response = {
+    message: '',
+    data: null,
+    status: '',
+}
 
 exports.register = async (req, res) => {
     try {
@@ -22,10 +29,13 @@ exports.register = async (req, res) => {
             }
             return res.status(400).json(response);
         }
-        const data = await AuthServices.register(req.body.email, req.body.password);
+        const dataUser = await AuthServices.register(req.body.email, req.body.password);
+        if (dataUser.error) throw new Error(dataUser.error.message);
+        const dataResult = await UserServices.createUser(req.body.email, dataUser.user.id);
         response = {
             status: "success",
             message: "Registered successfully, please check your email to verify your account",
+            data: dataResult
         }
         res.status(200).json(response);
     } catch (error) {

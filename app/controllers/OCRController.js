@@ -7,10 +7,9 @@ let response = {
     status: '',
 }
 
-exports.fileRecognize = async (req, res) => {
+exports.fileRecognizeSertifikat = async (req, res) => {
     try{
         const data = await OCRService.recognize(req.file);
-        // await fs.unlinkSync(req.file.path)
         response = {
             status: 'success',
             message: 'File recognized successfully',
