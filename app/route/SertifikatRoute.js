@@ -7,6 +7,8 @@ const SertifikatController = require('../controllers/SertifikatController');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+router.post('/ocr', upload.single('file'), ocrController.fileRecognizeSertifikat);
+
 router.post('/', upload.single('file'), SertifikatController.createSertifikat);
 router.get('/', SertifikatController.getAllSertifikat);
 router.get('/:id', SertifikatController.getSertifikatById);

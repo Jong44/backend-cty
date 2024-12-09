@@ -12,8 +12,12 @@ const client = new vision.ImageAnnotatorClient({
 });
 
 const recognize = async (file) => {
-    const filePath = file.path;
-    const [result] = await client.textDetection(filePath);
+    const fileBuffer = file.buffer;
+    const [result] = await client.textDetection({
+        image: {
+            content: fileBuffer,
+        },
+    });
     const detections = result.textAnnotations;
 
     const extractedText = detections[0].description;
@@ -25,8 +29,6 @@ const recognize = async (file) => {
      const nib = nibMatch ? nibMatch[1].trim() : null;
      const luas = luasMatch ? luasMatch[1].trim() : null;
      const pemegangHak = pemegangHakMatch ? pemegangHakMatch[1].trim().replace(/\n/g, ', ') : null;
-
-    await fs.unlinkSync(filePath);
 
     const data = {
         id: nib ? nib : "Tidak Ditemukan",
