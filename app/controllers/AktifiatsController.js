@@ -1,4 +1,4 @@
-const UserService = require('../services/UserService');
+const AktifitasService = require('../services/AktifitasService');
 
 let response = {
     message: '',
@@ -6,19 +6,19 @@ let response = {
     status: '',
 }
 
-exports.getAllUser = async (req, res) => {
+exports.getAllAktifitas = async (req, res) => {
     try {
-        const data = await UserService.getAllUser();
+        const data = await AktifitasService.getAllAktifitas();
         if (data.length == 0) {
             response = {
                 status: "success",
-                message: "No users found",
+                message: "No Activity found",
                 data: []
             }
         } else {
             response = {
                 status: "success",
-                message: "Users found",
+                message: "Activity found",
                 data: data
             }
         }
@@ -33,19 +33,19 @@ exports.getAllUser = async (req, res) => {
     }
 }
 
-exports.getUserById = async (req, res) => {
+exports.getAktifitasById = async (req, res) => {
     try {
-        const data = await UserService.getUserById(req.params.id);
+        const data = await ActifitasService.getAktifitasById(req.params.id);
         if (data.length === 0) {
             response = {
                 status: "success",
-                message: "No users found",
+                message: "No Actifity found",
                 data: null
             }
         } else {
             response = {
                 status: "success",
-                message: "Users found",
+                message: "Activity found",
                 data: data?.[0]
             }
         }
@@ -60,9 +60,9 @@ exports.getUserById = async (req, res) => {
     }
 }
 
-exports.createUser = async (req, res) => {
+exports.createAktifitas = async (req, res) => {
     try {
-        if (!req.body.name || !req.body.email ) {
+        if (!req.body.status|| !req.body.activity_type || !req.body.detail ) {
             response = {
                 status: "error",
                 message: "Content are required",
@@ -72,21 +72,19 @@ exports.createUser = async (req, res) => {
             return;
         }
         const payload = {
-            name: req.body.name,
-            email: req.body.email,
-            photo_profile: req.body.photo_profile,
-            created_at: new Date(),
-            updated_at: new Date(),
-            uuid: req.body.uuid,
-            alamat: req.body.alamat,
-            nik: req.body.nik,
-            file_sertifikat: req.body.file_sertifikat,
-            file_ktp: req.body.file_ktp
+            log_id: req.body.log_id,
+            user_id: req.body.user_id,
+            node_id: req.body.node_id,
+            activity_type: req.body.activity_type,
+            timestamp: new Date(),
+            status: req.body.status,
+            detail: req.body.detail
+            
         }
-        const data = await UserService.createUser(payload);
+        const data = await AktifitasService.createAktifitas(payload);
         response = {
             status: "success",
-            message: "User created",
+            message: "Aktifitas created",
             data: data
         }
         res.status(201).json(response);
@@ -100,12 +98,12 @@ exports.createUser = async (req, res) => {
     }
 }
 
-exports.updateUser = async (req, res) => {
+exports.updateAktifitas = async (req, res) => {
     try {
-        const data = await UserService.updateUser(req.params.id, req.body);
+        const data = await AktifitasService.updateAktifitas(req.params.id, req.body);
         response = {
             status: "success",
-            message: "User updated",
+            message: "Aktifitas updated",
             data: data
         }
         res.status(200).json(response);
@@ -119,12 +117,12 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.deleteUser = async (req, res) => {
+exports.deleteAktifitas = async (req, res) => {
     try {
-        const data = await UserService.deleteUser(req.params.id);
+        const data = await AktifitasService.deleteAktifitas(req.params.id);
         response = {
             status: "success",
-            message: "User deleted",
+            message: "Aktifitas deleted",
             data: data
         }
         res.status(200).json(response);
