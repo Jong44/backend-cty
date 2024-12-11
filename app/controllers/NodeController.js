@@ -1,4 +1,4 @@
-const UserService = require('../services/UserService');
+const NodeServices = require('../services/NodeServices');
 
 let response = {
     message: '',
@@ -6,19 +6,19 @@ let response = {
     status: '',
 }
 
-exports.getAllUser = async (req, res) => {
+exports.getAllNode = async (req, res) => {
     try {
-        const data = await UserService.getAllUser();
+        const data = await NodeServices.getAllNode();
         if (data.length == 0) {
             response = {
                 status: "success",
-                message: "No users found",
+                message: "No node found",
                 data: []
             }
         } else {
             response = {
                 status: "success",
-                message: "Users found",
+                message: "Node found",
                 data: data
             }
         }
@@ -33,19 +33,19 @@ exports.getAllUser = async (req, res) => {
     }
 }
 
-exports.getUserById = async (req, res) => {
+exports.getNodeById = async (req, res) => {
     try {
-        const data = await UserService.getUserById(req.params.id);
+        const data = await NodeServices.getNodeById(req.params.id);
         if (data.length === 0) {
             response = {
                 status: "success",
-                message: "No users found",
+                message: "No node found",
                 data: null
             }
         } else {
             response = {
                 status: "success",
-                message: "Users found",
+                message: "Node found",
                 data: data?.[0]
             }
         }
@@ -60,9 +60,9 @@ exports.getUserById = async (req, res) => {
     }
 }
 
-exports.createUser = async (req, res) => {
+exports.createNode = async (req, res) => {
     try {
-        if (!req.body.nama_lengkap || !req.body.email || !req.body.role || !req.body.public_key) {
+        if (!req.body.hash_prev || !req.body.data_encrypted || !req.body.encrypted_key || !req.body.hash) {
             response = {
                 status: "error",
                 message: "Content are required",
@@ -72,18 +72,16 @@ exports.createUser = async (req, res) => {
             return;
         }
         const payload = {
-            nama_lengkap: req.body.nama_lengkap,
-            email: req.body.email,
-            photo_profile: req.body.photo_profile,
-            role: req.body.role,
+            hash_prev: req.body.hash_prev,
+            data_encrypted: req.body.data_encrypted,
+            encrypted_key: req.body.encrypted_key,
             created_at: new Date(),
-            updated_at: new Date(),
-            public_key: req.body.public_key
+            hash: req.body.hash
         }
-        const data = await NoteService.createUser(payload);
+        const data = await NodeServices.createNode(payload);
         response = {
             status: "success",
-            message: "User created",
+            message: "Node created",
             data: data
         }
         res.status(201).json(response);
@@ -97,12 +95,12 @@ exports.createUser = async (req, res) => {
     }
 }
 
-exports.updateUser = async (req, res) => {
+exports.updateNode = async (req, res) => {
     try {
-        const data = await UserService.updateUser(req.params.id, req.body);
+        const data = await NodeServices.updateNode(req.params.id, req.body);
         response = {
             status: "success",
-            message: "User updated",
+            message: "Node updated",
             data: data
         }
         res.status(200).json(response);
@@ -116,12 +114,12 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.deleteUser = async (req, res) => {
+exports.deleteNode = async (req, res) => {
     try {
-        const data = await UserService.deleteUser(req.params.id);
+        const data = await NodeServices.deleteNode(req.params.id);
         response = {
             status: "success",
-            message: "User deleted",
+            message: "Node deleted",
             data: data
         }
         res.status(200).json(response);
