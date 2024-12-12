@@ -40,6 +40,7 @@ const deleteUser = async (id) => {
     return data;
 }
 
+
 module.exports = {
     getAllUser,
     getUserById,
