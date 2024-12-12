@@ -62,7 +62,7 @@ exports.getUserById = async (req, res) => {
 
 exports.createUser = async (req, res) => {
     try {
-        if (!req.body.nama_lengkap || !req.body.email || !req.body.role || !req.body.public_key) {
+        if (!req.body.name || !req.body.email) {
             response = {
                 status: "error",
                 message: "Content are required",
@@ -72,15 +72,13 @@ exports.createUser = async (req, res) => {
             return;
         }
         const payload = {
-            nama_lengkap: req.body.nama_lengkap,
+            name: req.body.name,
             email: req.body.email,
             photo_profile: req.body.photo_profile,
-            role: req.body.role,
             created_at: new Date(),
             updated_at: new Date(),
-            public_key: req.body.public_key
         }
-        const data = await NoteService.createUser(payload);
+        const data = await UserService.createUser(payload);
         response = {
             status: "success",
             message: "User created",
