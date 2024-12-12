@@ -21,8 +21,8 @@ const getNotifById = async (id) => {
     return data;
 }
 
-const updateNotif = async (id, notifikasi) => {
-    const {data, error} = await supabase.from('notifikasi').update(notifikasi).eq('notification_id', id);
+const updateNotif = async (id, id) => {
+    const {data, error} = await supabase.from('notifikasi').update(node).eq('notification_id', id);
 
     if (error) throw new Error(error.message);
     return data;
@@ -35,10 +35,33 @@ const deleteNotif = async (id) => {
     return data;
 }
 
+const getNotifByIdUser = async (idUser) => {
+    const {data, error} = await supabase.from('notifikasi').select('*').eq('user_id', idUser);
+    if (error) throw new Error(error.message);
+    return data;
+}
+
+const readAllNotifikasi = async(idUser) => {
+    const {data, error} = await supabase.from('notifikasi').update({'is_read':true}).eq('user_id', idUser);
+
+    if (error) throw new Error(error.message);
+    return data;
+}
+
+const deleteAllNotifikasi = async (idUser) => {
+    const {data, error} = await supabase.from('notifikasi').delete().eq('notification_id', idUser);
+
+    if (error) throw new Error(error.message);
+    return data;
+}
+
 module.exports = {
     getAllNotif,
     getNotifById,
     createNotif,
     updateNotif,
-    deleteNotif
+    deleteNotif,
+    getNotifByIdUser,
+    readAllNotifikasi,
+    deleteAllNotifikasi
 }

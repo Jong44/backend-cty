@@ -130,3 +130,84 @@ exports.deleteNotif = async (req, res) => {
         res.status(500).json(response);
     }
 }
+
+exports.getNotifByIdUser = async (req, res) => {
+    try {
+        const data = await NotifServices.getNotifByIdUser(req.params.idUser)
+        if (data.length === 0) {
+            response = {
+                status: "success",
+                message: "No notification found",
+                data: null
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Notification found",
+                data: data
+            }
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+
+exports.readAllNotifikasi = async (req, res) => {
+    try {
+        const data = await NotifServices.readAllNotifikasi(req.params.idUser)
+        if (data.length === 0) {
+            response = {
+                status: "success",
+                message: "No notification found",
+                data: null
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Notification found",
+                data: data
+            }
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+
+exports.deleteAllNotifikasi = async (req, res) => {
+    try {
+        const data = await NotifServices.deleteAllNotifikasi(req.params.idUser)
+        if (data.length === 0) {
+            response = {
+                status: "success",
+                message: "No notification found",
+                data: null
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Notification found",
+                data: data
+            }
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
