@@ -21,8 +21,8 @@ const getNotifById = async (id) => {
     return data;
 }
 
-const updateNotif = async (id, notifikasi) => {
-    const {data, error} = await supabase.from('notifikasi').update({'is_read':true}).eq('notification_id', id);
+const updateNotif = async (id, id) => {
+    const {data, error} = await supabase.from('notifikasi').update(node).eq('notification_id', id);
 
     if (error) throw new Error(error.message);
     return data;
