@@ -7,6 +7,8 @@ const AktifitasRoute = require('./route/AktifitasRoute');
 const cors = require('cors');
 
 app.use(cors());
+const NodeRoute = require('./route/NodeRoute');
+const NotifRoute = require('./route/NotifRoute');
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -18,6 +20,9 @@ app.use('/auth',AuthRoute);
 app.use('/user',UserRoute);
 app.use('/aktifitas', AktifitasRoute);
 
+app.use('/auth',AuthRoute)
+app.use('/node',NodeRoute)
+app.use('/notif',NotifRoute)
 
 
 module.exports = app;

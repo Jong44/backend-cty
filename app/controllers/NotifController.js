@@ -1,4 +1,4 @@
-const UserService = require('../services/UserService');
+const NotifServices = require('../services/NotifServices');
 
 let response = {
     message: '',
@@ -6,19 +6,19 @@ let response = {
     status: '',
 }
 
-exports.getAllUser = async (req, res) => {
+exports.getAllNotif = async (req, res) => {
     try {
-        const data = await UserService.getAllUser();
+        const data = await NotifServices.getAllNotif();
         if (data.length == 0) {
             response = {
                 status: "success",
-                message: "No users found",
+                message: "No notification found",
                 data: []
             }
         } else {
             response = {
                 status: "success",
-                message: "Users found",
+                message: "Notification found",
                 data: data
             }
         }
@@ -33,19 +33,19 @@ exports.getAllUser = async (req, res) => {
     }
 }
 
-exports.getUserById = async (req, res) => {
+exports.getNotifById = async (req, res) => {
     try {
-        const data = await UserService.getUserById(req.params.id);
+        const data = await NotifServices.getNotifById(req.params.id);
         if (data.length === 0) {
             response = {
                 status: "success",
-                message: "No users found",
+                message: "No notification found",
                 data: null
             }
         } else {
             response = {
                 status: "success",
-                message: "Users found",
+                message: "Notification found",
                 data: data?.[0]
             }
         }
@@ -60,9 +60,9 @@ exports.getUserById = async (req, res) => {
     }
 }
 
-exports.createUser = async (req, res) => {
+exports.createNotif = async (req, res) => {
     try {
-        if (!req.body.name || !req.body.email ) {
+        if (!req.body.message || !req.body.is_read) {
             response = {
                 status: "error",
                 message: "Content are required",
@@ -72,21 +72,14 @@ exports.createUser = async (req, res) => {
             return;
         }
         const payload = {
-            name: req.body.name,
-            email: req.body.email,
-            photo_profile: req.body.photo_profile,
-            created_at: new Date(),
-            updated_at: new Date(),
-            uuid: req.body.uuid,
-            alamat: req.body.alamat,
-            nik: req.body.nik,
-            file_sertifikat: req.body.file_sertifikat,
-            file_ktp: req.body.file_ktp
+            message: req.body.message,
+            is_read: req.body.is_read,
+            created_at: new Date()
         }
-        const data = await UserService.createUser(payload);
+        const data = await NotifServices.createNotif(payload);
         response = {
             status: "success",
-            message: "User created",
+            message: "Notification created",
             data: data
         }
         res.status(201).json(response);
@@ -100,12 +93,12 @@ exports.createUser = async (req, res) => {
     }
 }
 
-exports.updateUser = async (req, res) => {
+exports.updateNotif = async (req, res) => {
     try {
-        const data = await UserService.updateUser(req.params.id, req.body);
+        const data = await NotifServices.updateNotif(req.params.id, req.body);
         response = {
             status: "success",
-            message: "User updated",
+            message: "Notification updated",
             data: data
         }
         res.status(200).json(response);
@@ -119,12 +112,12 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.deleteUser = async (req, res) => {
+exports.deleteNotif = async (req, res) => {
     try {
-        const data = await UserService.deleteUser(req.params.id);
+        const data = await NotifServices.deleteNotif(req.params.id);
         response = {
             status: "success",
-            message: "User deleted",
+            message: "Notification deleted",
             data: data
         }
         res.status(200).json(response);
