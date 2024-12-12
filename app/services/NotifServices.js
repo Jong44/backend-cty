@@ -21,7 +21,7 @@ const getNotifById = async (id) => {
     return data;
 }
 
-const updateNotif = async (id, id) => {
+const updateNotif = async (id, node) => {
     const {data, error} = await supabase.from('notifikasi').update(node).eq('notification_id', id);
 
     if (error) throw new Error(error.message);
