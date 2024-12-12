@@ -8,5 +8,8 @@ router.get('/:id', NotifController.getNotifById);
 router.post('/', NotifController.createNotif);
 router.put('/:id', NotifController.updateNotif);
 router.delete('/:id', NotifController.deleteNotif);
+router.get('/user/:idUser', NotifController.getNotifByIdUser);
+router.post('/user/:idUser', NotifController.readAllNotifikasi);
+router.delete('/:id', NotifController.deleteAllNotifikasi);
 
 module.exports = router;
