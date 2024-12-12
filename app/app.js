@@ -3,7 +3,7 @@ const app = express();
 const AuthRoute=require('./route/AuthRoute');
 const bodyParser = require('body-parser');
 const UserRoute = require('./route/UserRoute');
-const SertifikatRoute = require('./route/SertifikatRoute');
+const AktifitasRoute = require('./route/AktifitasRoute');
 const cors = require('cors');
 
 app.use(cors());
@@ -14,9 +14,9 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json())
 
-app.use('/auth',AuthRoute)
-app.use('/user',UserRoute)
-app.use('/sertifikat', SertifikatRoute);
+app.use('/auth',AuthRoute);
+app.use('/user',UserRoute);
+app.use('/aktifitas', AktifitasRoute);
 
 
 
