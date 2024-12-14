@@ -70,3 +70,28 @@ exports.getCountSertifikatByUserId = async (req, res) => {
     }
 }
 
+exports.getAllSertifikatByUserId = async (req, res) => {
+    try{
+        if(!req.params.userId){
+            response = {
+                status: 'error',
+                message: 'User ID is required',
+            }
+            return res.status(400).json(response);
+        }
+        const data = await sertifikatService.getAllSertifikatByUserId(req.params.userId);
+        response = {
+            status: 'success',
+            message: 'Sertifikat fetched successfully',
+            data: data,
+        }
+        res.status(200).json(response);
+    }catch(error){
+        response = {
+            status: 'error',
+            message: error.message,
+            data: null,
+        }
+        res.status(500).json(response);
+    }
+}

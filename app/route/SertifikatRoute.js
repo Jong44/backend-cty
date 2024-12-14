@@ -14,5 +14,6 @@ router.post('/ocr/ktp', upload.single('image'), OCRController.fileRecognizeKTP);
 router.get('/count/:userId', SertifikatController.getCountSertifikatByUserId);
 
 router.post('/', upload.fields([{ name: 'sertifikat', maxCount: 1 }, { name: 'ktp', maxCount: 1 }]), SertifikatController.createSertifikat);
+router.get('/user/:userId', SertifikatController.getAllSertifikatByUserId);
 
 module.exports = router;

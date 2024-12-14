@@ -105,9 +105,35 @@ const getCountSertifikatByUserId = async (userId) => {
     return data.length;
 }
 
+// membuat fungsi untuk mendapatkan semua sertifikat berdasarkan user_id
+const getAllSertifikatByUserId = async (userId) => {
+    // mengambil data dari table node berdasarkan user_id
+    const {data, error} = await supabase.from('node').select('*').eq('user_id', userId);
 
+    // jika terjadi error, maka akan melempar error
+    if (error) throw new Error(error.message);
+
+    // nanti disini untuk ngolah datanya biar ke dekripsi
+    // dekripsi data
+
+    const result = data.map((item) => {
+        const [iv, encryptedData] = item.data_encrypted.split(':').map((str) => Buffer.from(str, 'hex'));
+        const key = item.encrypted_key;
+        const decipher = crypto.createDecipheriv('aes-256-ctr', Buffer.from(key, 'hex'), iv);
+        const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
+
+        return {
+            ...item,
+            data_dekripsi: JSON.parse(decrypted.toString()),
+        }
+    });
+
+
+    return result;
+}
 
 module.exports = {
     createSertifikat,
     getCountSertifikatByUserId,
+    getAllSertifikatByUserId
 }
