@@ -35,7 +35,7 @@ exports.getAllAktifitas = async (req, res) => {
 
 exports.getAktifitasById = async (req, res) => {
     try {
-        const data = await ActifitasService.getAktifitasById(req.params.id);
+        const data = await AktifitasService.getAktifitasById(req.params.id);
         if (data.length === 0) {
             response = {
                 status: "success",
@@ -124,6 +124,60 @@ exports.deleteAktifitas = async (req, res) => {
             status: "success",
             message: "Aktifitas deleted",
             data: data
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+
+exports.getAktifitasByUserId = async (req, res) => {
+    try {
+        const data = await AktifitasService.getAktifitasByUserId(req.params.id);
+        if (data.length == 0) {
+            response = {
+                status: "success",
+                message: "No Activity found",
+                data: []
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Activity found",
+                data: data
+            }
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+
+exports.getCountTransaksiByUserId = async (req, res) => {
+    try {
+        const data = await AktifitasService.getCountTransaksiByUserId(req.params.id);
+        if (data.length == 0) {
+            response = {
+                status: "success",
+                message: "No Activity found",
+                data: []
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Activity found",
+                data: data
+            }
         }
         res.status(200).json(response);
     } catch (error) {

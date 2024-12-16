@@ -34,10 +34,24 @@ const deleteAktifitas = async (id) => {
     return data;
 }
 
+const getAktifitasByUserId = async (id) => {
+    const {data, error} = await supabase.from('aktifitas').select('*').eq('user_id', id);
+    if (error) throw new Error(error.message);
+    return data;
+}
+
+const getCountTransaksiByUserId = async (id) => {
+    const {data, error} = await supabase.from('aktifitas').select('*').eq('user_id', id);
+    if (error) throw new Error(error.message);
+    return data.length;
+}
+
 module.exports = {
     createAktifitas,
     getAllAktifitas,
     getAktifitasById,
     updateAktifitas,
-    deleteAktifitas
+    deleteAktifitas,
+    getAktifitasByUserId,
+    getCountTransaksiByUserId
 }
