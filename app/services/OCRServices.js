@@ -4,10 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const { text } = require('body-parser');
 
-let dotenv = require('dotenv').config();
-if(dotenv.error){
-    throw dotenv.error;
-}
 
 
 
