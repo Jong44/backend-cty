@@ -35,7 +35,7 @@ const deleteAktifitas = async (id) => {
 }
 
 const getAktifitasByUserId = async (id) => {
-    const {data, error} = await supabase.from('aktifitas').select('*').eq('uid', id);
+    const {data, error} = await supabase.from('aktifitas').select('*').eq('uuid', id);
     if (error) throw new Error(error.message);
     return data;
 }
