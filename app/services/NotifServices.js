@@ -36,13 +36,13 @@ const deleteNotif = async (id) => {
 }
 
 const getNotifByIdUser = async (idUser) => {
-    const {data, error} = await supabase.from('notifikasi').select('*').eq('user_id', idUser);
+    const {data, error} = await supabase.from('notifikasi').select('*').eq('uuid', idUser);
     if (error) throw new Error(error.message);
     return data;
 }
 
 const readAllNotifikasi = async(idUser) => {
-    const {data, error} = await supabase.from('notifikasi').update({'is_read':true}).eq('user_id', idUser);
+    const {data, error} = await supabase.from('notifikasi').update({'is_read':true}).eq('uuid', idUser);
 
     if (error) throw new Error(error.message);
     return data;
