@@ -72,6 +72,7 @@ const createSertifikat = async (sertifikat) => {
         // get url image from resultStorage
         file_sertifikat: file_sertifikat,
         file_ktp: file_ktp,
+        uuid: sertifikat.uuid,
     }
 
     const dataString = JSON.stringify(data);
@@ -99,7 +100,7 @@ const createSertifikat = async (sertifikat) => {
 }
 
 const getCountSertifikatByUserId = async (userId) => {
-    const {data, error} = await supabase.from('node').select('fingerprint').eq('user_id', userId);
+    const {data, error} = await supabase.from('node').select('fingerprint').eq('uuid', userId);
     if (error) throw new Error(error.message);
 
     return data.length;
