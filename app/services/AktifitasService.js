@@ -41,7 +41,7 @@ const getAktifitasByUserId = async (id) => {
 }
 
 const getCountTransaksiByUserId = async (id) => {
-    const {data, error} = await supabase.from('aktifitas').select('*').eq('user_id', id);
+    const {data, error} = await supabase.from('aktifitas').select('*').eq('uuid', id).eq("activity_type", "transfer");
     if (error) throw new Error(error.message);
     return data.length;
 }
