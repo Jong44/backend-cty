@@ -16,4 +16,6 @@ router.get('/history/:fingerprint', SertifikatController.getHistoryOwnershipCert
 
 router.post('/', upload.fields([{ name: 'sertifikat', maxCount: 1 }, { name: 'ktp', maxCount: 1 }]), SertifikatController.createSertifikat);
 
+router.get('/user/:userId', SertifikatController.getAllSertifikatByUserId);
+
 module.exports = router;

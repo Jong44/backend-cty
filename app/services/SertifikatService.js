@@ -105,55 +105,41 @@ const getCountSertifikatByUserId = async (userId) => {
     return data.length;
 }
 
+// membuat fungsi untuk mendapatkan semua sertifikat berdasarkan user_id
+const getAllSertifikatByUserId = async (userId) => {
+    const algorithm = 'aes-256-ctr';
+    // mengambil data dari table node berdasarkan user_id
+    const {data, error} = await supabase.from('node').select('*').eq('uuid', userId);
 
-// GET HISTORY CERTIFICATE
-const getHistoryOwnershipCertificate = async (fingerprint) => {
-    try {
+    // jika terjadi error, maka akan melempar error
+    if (error) throw new Error(error.message);
 
-        //FETCHING CURRENT CERTIFICATE AND LINKED PREV CERTIFICATE
-        const { data : currentCertificate, error} = await supabase
-            .from('node')            
-            .select('*')
-            .eq('fingerprint', fingerprint)
-            .single();
-        
-        if ( error || !currentCertificate) {
-            throw new Error('Certificate not found');
-        }
 
-        // BUILD HISTORY LINKEDLIST
-        let history = [];
-        let currentHash = currentCertificate.hash_prev;
+    //buat dekripsi
+    
 
-        while (currentHash) {
-            const { data: previousCertificate, error: prevError} = await supabase
-                .from('node')            
-                .select('*')
-                .eq('hash', currentHash)
-                .single();
-
-                if (prevError || !previousCertificate) break;
-
-                history.push(previousCertificate);
-                currentHash = previousCertificate.hash_prev;
-        }
-
-        return {
-            currentCertificate,
-            history,
+    const finalData = data.map((row) => {
+        if (row.data_encrypted) {
+            const key = Buffer.from(row.encrypted_key, 'hex');
+            const [ivHex, encryptedDataHex] = row.data_encrypted.split(':');
+            const iv = Buffer.from(ivHex, 'hex');
+            const encryptedData = Buffer.from(encryptedDataHex, 'hex');
             
+            const decipher = crypto.createDecipheriv(algorithm, key, iv);
+            let decrypted = decipher.update(encryptedData, 'hex', 'utf-8');
+            decrypted += decipher.final('utf-8');
+            row.data_decrypted= JSON.parse(decrypted);
+            row.data_encrypted = "hidden";
+            row.encrypted_key = "hidden";
         }
-    } catch (err) {
-        throw new Error(`Error retrieving certificate history: ${err.message}`)
-    }
+        return row;
+    });
 
-        
-        
+    return finalData;
 }
-
 
 module.exports = {
     createSertifikat,
     getCountSertifikatByUserId,
-    getHistoryOwnershipCertificate
+    getAllSertifikatByUserId
 }
