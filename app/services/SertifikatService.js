@@ -105,6 +105,43 @@ const getCountSertifikatByUserId = async (userId) => {
     return data.length;
 }
 
+const getHistoryOwnershipCertificate = async (fingerprint) => {
+    try {
+        //FETCHING CURRENT CERTIFICATE AND LINKED PREV CERTIFICATE
+        const { data : currentCertificate, error} = await supabase
+            .from('node')            
+            .select('*')
+            .eq('fingerprint', fingerprint)
+            .single();
+        
+        if ( error || !currentCertificate) {
+            throw new Error('Certificate not found');
+        }
+        // BUILD HISTORY LINKEDLIST
+        let history = [];
+        let currentHash = currentCertificate.hash_prev;
+        while (currentHash) {
+            const { data: previousCertificate, error: prevError} = await supabase
+                .from('node')            
+                .select('*')
+                .eq('hash', currentHash)
+                .single();
+                if (prevError || !previousCertificate) break;
+                history.push(previousCertificate);
+                currentHash = previousCertificate.hash_prev;
+        }
+        return {
+            currentCertificate,
+            history,
+            
+        }
+    } catch (err) {
+        throw new Error(`Error retrieving certificate history: ${err.message}`)
+    }
+        
+        
+}
+
 // membuat fungsi untuk mendapatkan semua sertifikat berdasarkan user_id
 const getAllSertifikatByUserId = async (userId) => {
     const algorithm = 'aes-256-ctr';
@@ -141,5 +178,6 @@ const getAllSertifikatByUserId = async (userId) => {
 module.exports = {
     createSertifikat,
     getCountSertifikatByUserId,
-    getAllSertifikatByUserId
+    getAllSertifikatByUserId,
+    getHistoryOwnershipCertificate,
 }
