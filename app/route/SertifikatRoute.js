@@ -12,6 +12,7 @@ router.post('/ocr/sertifikat', upload.single('image'), OCRController.fileRecogni
 router.post('/ocr/ktp', upload.single('image'), OCRController.fileRecognizeKTP);
 
 router.get('/count/:userId', SertifikatController.getCountSertifikatByUserId);
+router.get('/history/:fingerprint', SertifikatController.getHistoryOwnershipCertificate);
 
 router.post('/', upload.fields([{ name: 'sertifikat', maxCount: 1 }, { name: 'ktp', maxCount: 1 }]), SertifikatController.createSertifikat);
 

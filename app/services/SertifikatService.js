@@ -3,6 +3,7 @@ const supabase = require('../config/configSupabase');
 const OCRService = require('./OCRServices');
 const crypto = require('crypto');
 
+// CREATE CERTIFICATE
 const createSertifikat = async (sertifikat) => {
 
     const iv = crypto.randomBytes(16);
@@ -99,6 +100,7 @@ const createSertifikat = async (sertifikat) => {
     return result;
 }
 
+// GET COUNT CERTIFICATE
 const getCountSertifikatByUserId = async (userId) => {
     const {data, error} = await supabase.from('node').select('fingerprint').eq('uuid', userId);
     if (error) throw new Error(error.message);
@@ -107,8 +109,53 @@ const getCountSertifikatByUserId = async (userId) => {
 }
 
 
+// GET HISTORY CERTIFICATE
+const getHistoryOwnershipCertificate = async (fingerprint) => {
+    try {
+
+        //FETCHING CURRENT CERTIFICATE AND LINKED PREV CERTIFICATE
+        const { data : currentCertificate, error} = await supabase
+            .from('node')            
+            .select('*')
+            .eq('fingerprint', fingerprint)
+            .single();
+        
+        if ( error || !currentCertificate) {
+            throw new Error('Certificate not found');
+        }
+
+        // BUILD HISTORY LINKEDLIST
+        let history = [];
+        let currentHash = currentCertificate.hash_prev;
+
+        while (currentHash) {
+            const { data: previousCertificate, error: prevError} = await supabase
+                .from('node')            
+                .select('*')
+                .eq('hash', currentHash)
+                .single();
+
+                if (prevError || !previousCertificate) break;
+
+                history.push(previousCertificate);
+                currentHash = previousCertificate.hash_prev;
+        }
+
+        return {
+            currentCertificate,
+            history,
+            
+        }
+    } catch (err) {
+        throw new Error(`Error retrieving certificate history: ${err.message}`)
+    }
+
+        
+        
+}
 
 module.exports = {
     createSertifikat,
     getCountSertifikatByUserId,
+    getHistoryOwnershipCertificate,
 }
