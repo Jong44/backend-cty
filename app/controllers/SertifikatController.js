@@ -72,13 +72,13 @@ exports.getCountSertifikatByUserId = async (req, res) => {
 
 exports.getHistoryOwnershipCertificate = async (req, res) => {
     try {
-        const {fingerprint} = req.params;
+        const {hash} = req.params;
 
-        if (!fingerprint) {
-            return res.status(400).json({ error: 'Fingerprint is required'});
+        if (!hash) {
+            return res.status(400).json({ error: 'Hash is required'});
         }
 
-        const history = await this.getHistoryOwnershipCertificate(fingerprint);
+        const history = await sertifikatService.getHistoryOwnershipCertificate(hash);
 
         res.status(200).json({
             message: 'Certificate history retrieved successfully',

@@ -105,18 +105,39 @@ const getCountSertifikatByUserId = async (userId) => {
     return data.length;
 }
 
-const getHistoryOwnershipCertificate = async (fingerprint) => {
+const decrryptData = (data, key) => {
+    const algorithm = 'aes-256-ctr';
+    const ivHex = data.split(':')[0];
+    const encryptedDataHex = data.split(':')[1];
+    const iv = Buffer.from(ivHex, 'hex');
+    const keyBuffer = Buffer.from(key, 'hex');
+    const encryptedData = Buffer.from(encryptedDataHex, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, keyBuffer, iv);
+    let decrypted = decipher.update(encryptedData, 'hex', 'utf-8');
+    decrypted += decipher.final('utf-8');
+    return JSON.parse(decrypted);
+}
+
+const getHistoryOwnershipCertificate = async (hash) => {
     try {
         //FETCHING CURRENT CERTIFICATE AND LINKED PREV CERTIFICATE
         const { data : currentCertificate, error} = await supabase
             .from('node')            
             .select('*')
-            .eq('fingerprint', fingerprint)
+            .eq('hash', hash)
             .single();
         
         if ( error || !currentCertificate) {
             throw new Error('Certificate not found');
         }
+        const data_decrypted = decrryptData(currentCertificate.data_encrypted, currentCertificate.encrypted_key);
+        const currentData = {
+            hash: currentCertificate.hash,
+            created_at: currentCertificate.created_at,
+            name: data_decrypted.nama,
+            type: data_decrypted.type ? data_decrypted.type : 'Pembuat',
+        }
+
         // BUILD HISTORY LINKEDLIST
         let history = [];
         let currentHash = currentCertificate.hash_prev;
@@ -127,11 +148,18 @@ const getHistoryOwnershipCertificate = async (fingerprint) => {
                 .eq('hash', currentHash)
                 .single();
                 if (prevError || !previousCertificate) break;
-                history.push(previousCertificate);
+                const data_decrypted = decrryptData(previousCertificate.data_encrypted, previousCertificate.encrypted_key);
+                const prevData = {
+                    hash: previousCertificate.hash,
+                    created_at: previousCertificate.created_at,
+                    name: data_decrypted.nama,
+                    type: data_decrypted.type ? data_decrypted.type : 'Pembuat',
+                }
+                history.push(prevData);
                 currentHash = previousCertificate.hash_prev;
         }
         return {
-            currentCertificate,
+            currentData,
             history,
             
         }
