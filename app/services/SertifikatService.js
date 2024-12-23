@@ -3,7 +3,6 @@ const supabase = require('../config/configSupabase');
 const OCRService = require('./OCRServices');
 const crypto = require('crypto');
 
-// CREATE CERTIFICATE
 const createSertifikat = async (sertifikat) => {
 
     const iv = crypto.randomBytes(16);
@@ -73,7 +72,6 @@ const createSertifikat = async (sertifikat) => {
         // get url image from resultStorage
         file_sertifikat: file_sertifikat,
         file_ktp: file_ktp,
-        uuid: sertifikat.uuid,
     }
 
     const dataString = JSON.stringify(data);
@@ -100,7 +98,6 @@ const createSertifikat = async (sertifikat) => {
     return result;
 }
 
-// GET COUNT CERTIFICATE
 const getCountSertifikatByUserId = async (userId) => {
     const {data, error} = await supabase.from('node').select('fingerprint').eq('uuid', userId);
     if (error) throw new Error(error.message);
@@ -154,8 +151,9 @@ const getHistoryOwnershipCertificate = async (fingerprint) => {
         
 }
 
+
 module.exports = {
     createSertifikat,
     getCountSertifikatByUserId,
-    getHistoryOwnershipCertificate,
+    getHistoryOwnershipCertificate
 }
