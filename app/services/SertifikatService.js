@@ -3,8 +3,6 @@ const supabase = require('../config/configSupabase');
 const OCRService = require('./OCRServices');
 const crypto = require('crypto');
 
-
-
 const decrryptData = (data, key) => {
     const algorithm = 'aes-256-ctr';
     const ivHex = data.split(':')[0];
@@ -24,7 +22,7 @@ const encryptURL = (url) => {
     }
     const iv = crypto.randomBytes(16);
     const key = Buffer.from(process.env.ENCRYPT_KEY, 'hex');
-    const cipher = crypto.createCipher("aes-256-cbc", key, iv);
+    const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
     let encrypted = cipher.update(url, "utf8", "hex");
     encrypted += cipher.final("hex");
     return encrypted;
