@@ -3,6 +3,27 @@ const supabase = require('../config/configSupabase');
 const OCRService = require('./OCRServices');
 const crypto = require('crypto');
 
+const decrryptData = (data, key) => {
+    const algorithm = 'aes-256-ctr';
+    const ivHex = data.split(':')[0];
+    const encryptedDataHex = data.split(':')[1];
+    const iv = Buffer.from(ivHex, 'hex');
+    const keyBuffer = Buffer.from(key, 'hex');
+    const encryptedData = Buffer.from(encryptedDataHex, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, keyBuffer, iv);
+    let decrypted = decipher.update(encryptedData, 'hex', 'utf-8');
+    decrypted += decipher.final('utf-8');
+    return JSON.parse(decrypted);
+}
+
+const encryptURL = (url) => {
+    const key = process.env.ENCRYPT_KEY;
+    const cipher = crypto.createCipher("aes-256-cbc", key);
+    let encrypted = cipher.update(url, "utf8", "hex");
+    encrypted += cipher.final("hex");
+    return encrypted;
+};
+
 const createSertifikat = async (sertifikat) => {
 
     const iv = crypto.randomBytes(16);
@@ -105,19 +126,6 @@ const getCountSertifikatByUserId = async (userId) => {
     return data.length;
 }
 
-const decrryptData = (data, key) => {
-    const algorithm = 'aes-256-ctr';
-    const ivHex = data.split(':')[0];
-    const encryptedDataHex = data.split(':')[1];
-    const iv = Buffer.from(ivHex, 'hex');
-    const keyBuffer = Buffer.from(key, 'hex');
-    const encryptedData = Buffer.from(encryptedDataHex, 'hex');
-    const decipher = crypto.createDecipheriv(algorithm, keyBuffer, iv);
-    let decrypted = decipher.update(encryptedData, 'hex', 'utf-8');
-    decrypted += decipher.final('utf-8');
-    return JSON.parse(decrypted);
-}
-
 const getHistoryOwnershipCertificate = async (hash) => {
     try {
         //FETCHING CURRENT CERTIFICATE AND LINKED PREV CERTIFICATE
@@ -178,9 +186,6 @@ const getAllSertifikatByUserId = async (userId) => {
 
     // jika terjadi error, maka akan melempar error
     if (error) throw new Error(error.message);
-
-
-    //buat dekripsi
     
 
     const finalData = data.map((row) => {
@@ -196,6 +201,8 @@ const getAllSertifikatByUserId = async (userId) => {
             row.data_decrypted= JSON.parse(decrypted);
             row.data_encrypted = "hidden";
             row.encrypted_key = "hidden";
+            row.file_ktp = encryptURL(row.file_ktp.data.publicURL);
+            row.file_sertifikat = encryptURL(row.file_sertifikat.data.publicURL);
         }
         return row;
     });
