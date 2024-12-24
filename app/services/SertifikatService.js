@@ -3,6 +3,8 @@ const supabase = require('../config/configSupabase');
 const OCRService = require('./OCRServices');
 const crypto = require('crypto');
 
+
+
 const decrryptData = (data, key) => {
     const algorithm = 'aes-256-ctr';
     const ivHex = data.split(':')[0];
@@ -17,8 +19,12 @@ const decrryptData = (data, key) => {
 }
 
 const encryptURL = (url) => {
-    const key = process.env.ENCRYPT_KEY;
-    const cipher = crypto.createCipher("aes-256-cbc", key);
+    if (!url || typeof url !== "string") {
+        throw new Error("Invalid data for encryption: URL must be a non-empty string.");
+    }
+    const iv = crypto.randomBytes(16);
+    const key = Buffer.from(process.env.ENCRYPT_KEY, 'hex');
+    const cipher = crypto.createCipher("aes-256-cbc", key, iv);
     let encrypted = cipher.update(url, "utf8", "hex");
     encrypted += cipher.final("hex");
     return encrypted;
@@ -201,8 +207,8 @@ const getAllSertifikatByUserId = async (userId) => {
             row.data_decrypted= JSON.parse(decrypted);
             row.data_encrypted = "hidden";
             row.encrypted_key = "hidden";
-            row.file_ktp = encryptURL(row.file_ktp.data.publicURL);
-            row.file_sertifikat = encryptURL(row.file_sertifikat.data.publicURL);
+            row.data_decrypted.file_ktp = encryptURL(row.data_decrypted.file_ktp.data.publicUrl);
+            row.data_decrypted.file_sertifikat = encryptURL(row.data_decrypted.file_sertifikat.data.publicUrl);
         }
         return row;
     });
