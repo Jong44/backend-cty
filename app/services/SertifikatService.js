@@ -21,7 +21,10 @@ const encryptURL = (url) => {
         throw new Error("Invalid data for encryption: URL must be a non-empty string.");
     }
     const iv = crypto.randomBytes(16);
-    const key = Buffer.from(process.env.ENCRYPT_KEY, 'hex');
+    const key = Buffer.from(process.env.ENCRYPT_KEY, "hex");
+    if (!key || key.length !== 32) {
+        throw new Error("Invalid encryption key: Key must be a 32-byte buffer. Now it is " + key.length + " bytes.");
+    }
     const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
     let encrypted = cipher.update(url, "utf8", "hex");
     encrypted += cipher.final("hex");
