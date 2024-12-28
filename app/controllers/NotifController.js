@@ -62,7 +62,7 @@ exports.getNotifById = async (req, res) => {
 
 exports.createNotif = async (req, res) => {
     try {
-        if (!req.body.message || !req.body.is_read) {
+        if (!req.body.message) {
             response = {
                 status: "error",
                 message: "Content are required",
@@ -73,7 +73,7 @@ exports.createNotif = async (req, res) => {
         }
         const payload = {
             message: req.body.message,
-            is_read: req.body.is_read,
+            is_read: false,
             created_at: new Date()
         }
         const data = await NotifServices.createNotif(payload);
