@@ -118,7 +118,7 @@ const createSertifikat = async (sertifikat) => {
         data_encrypted: encryptedDataString,
         encrypted_key: key,
         hash: hash,
-        user_id: sertifikat.user_id,
+        uuid: sertifikat.uuid,
         created_at: new Date().toISOString(),
     }
 

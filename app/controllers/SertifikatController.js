@@ -25,7 +25,7 @@ exports.createSertifikat = async (req, res) => {
             nik: req.body.nik,    
             sertifikat: req.files.sertifikat,
             ktp: req.files.ktp,
-            user_id: req.body.uuid,
+            uuid: req.body.uuid,
         }
         const data = await sertifikatService.createSertifikat(payload);
         response = {
