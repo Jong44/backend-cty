@@ -28,7 +28,10 @@ const encryptURL = (url) => {
     const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
     let encrypted = cipher.update(url, "utf8", "hex");
     encrypted += cipher.final("hex");
-    return encrypted;
+    return {
+        "iv": iv.toString("hex"),
+        "data": encrypted
+    };
 };
 
 const createSertifikat = async (sertifikat) => {
