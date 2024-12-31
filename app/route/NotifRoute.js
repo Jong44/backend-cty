@@ -3,13 +3,13 @@ const router = express.Router();
 const NotifController = require('../controllers/NotifController');
 
 
-router.get('/', NotifController.getAllNotif);
-router.get('/:id', NotifController.getNotifById);
-router.post('/', NotifController.createNotif);
-router.put('/:id', NotifController.updateNotif);
-router.delete('/:id', NotifController.deleteNotif);
-router.get('/user/:idUser', NotifController.getNotifByIdUser);
-router.post('/user/:idUser', NotifController.readAllNotifikasi);
-router.delete('/:id', NotifController.deleteAllNotifikasi);
+router.get('/', NotifController.getAllNotif); //done
+router.get('/:id', NotifController.getNotifById); //done
+router.post('/', NotifController.createNotif); //done
+router.put('/:id', NotifController.updateNotif); //done
+router.delete('/:id', NotifController.deleteNotif); //done
+router.get('/user/:idUser', NotifController.getNotifByIdUser); //done
+router.post('/user/:idUser', NotifController.readAllNotifikasi); //belom, kalo by id belom sabi
+router.delete('/:idUser', NotifController.deleteAllNotifikasi); //done
 
 module.exports = router;

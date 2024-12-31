@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js')
 let dotenv = require('dotenv').config();
-if(dotenv.error){
+if (dotenv.error) {
     throw dotenv.error;
 }
 

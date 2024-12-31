@@ -4,13 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const { text } = require('body-parser');
 
-let dotenv = require('dotenv').config();
-if(dotenv.error){
-    throw dotenv.error;
-}
-
-
-
 const client = new vision.ImageAnnotatorClient({
     credentials: {
         client_email: process.env.GOOGLE_APPLICATION_CREDENTIALS_CLIENT_EMAIL,

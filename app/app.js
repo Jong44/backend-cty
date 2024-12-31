@@ -21,8 +21,8 @@ app.use(bodyParser.json())
 app.use('/auth',AuthRoute);
 app.use('/user',UserRoute);
 app.use('/aktifitas', AktifitasRoute);
-app.use('/node',NodeRoute)
-app.use('/notif',NotifRoute)
+app.use('/node', NodeRoute)
+app.use('/notif', NotifRoute)
 app.use('/sertifikat',SertifikatRoute)
 
 
