@@ -3,7 +3,7 @@ const supabase = require('../config/configSupabase');
 const OCRService = require('./OCRServices');
 const crypto = require('crypto');
 
-const decrryptData = (data, key) => {
+const decryptData = (data, key) => {
     const algorithm = 'aes-256-ctr';
     const ivHex = data.split(':')[0];
     const encryptedDataHex = data.split(':')[1];
@@ -145,7 +145,7 @@ const getHistoryOwnershipCertificate = async (hash) => {
         if ( error || !currentCertificate) {
             throw new Error('Certificate not found');
         }
-        const data_decrypted = decrryptData(currentCertificate.data_encrypted, currentCertificate.encrypted_key);
+        const data_decrypted = decryptData(currentCertificate.data_encrypted, currentCertificate.encrypted_key);
         const currentData = {
             hash: currentCertificate.hash,
             created_at: currentCertificate.created_at,
@@ -163,7 +163,7 @@ const getHistoryOwnershipCertificate = async (hash) => {
                 .eq('hash', currentHash)
                 .single();
                 if (prevError || !previousCertificate) break;
-                const data_decrypted = decrryptData(previousCertificate.data_encrypted, previousCertificate.encrypted_key);
+                const data_decrypted = decryptData(previousCertificate.data_encrypted, previousCertificate.encrypted_key);
                 const prevData = {
                     hash: previousCertificate.hash,
                     created_at: previousCertificate.created_at,
@@ -217,9 +217,67 @@ const getAllSertifikatByUserId = async (userId) => {
     return finalData;
 }
 
+
+
+const getSertifikatByHash = async (hash) => {
+    try {
+        // Fetch the certificate based on hash
+        const { data: sertifikat, error } = await supabase
+            .from('node')
+            .select('*')
+            .eq('hash', hash)
+            .single();
+
+        // Check if there's an error in fetching data or no certificate found
+        if (error || !sertifikat) {
+            throw new Error('Certificate not found or error fetching data');
+        }
+
+        console.log('Certificate Data:', sertifikat); // Log for debugging
+
+        // Check if encrypted data and key exist and are valid
+        if (!sertifikat.data_encrypted || !sertifikat.encrypted_key) {
+            throw new Error('Encrypted data or key is missing or invalid');
+        }
+
+        console.log('Data Encrypted:', sertifikat.data_encrypted);
+        console.log('Encrypted Key:', sertifikat.encrypted_key);
+
+        // Decrypt the data
+        const decryptedData = decryptData(sertifikat.data_encrypted, sertifikat.encrypted_key);
+
+        // Mask sensitive information after decryption
+        sertifikat.data_encrypted = 'hidden';
+        sertifikat.encrypted_key = 'hidden';
+
+        console.log('Decrypted Data:', decryptedData);
+        console.log('url', decryptedData.file_ktp?.data?.publicUrl)
+
+        // Encrypt the URLs for sensitive data
+        decryptedData.file_ktp = encryptURL(String(decryptedData.file_ktp?.data?.publicUrl || ''));
+        decryptedData.file_sertifikat = encryptURL(String(decryptedData.file_sertifikat?.data?.publicUrl || ''));
+
+
+        // Tampilan data yang berhasil didekripsi
+        console.log('Decrypted Data:', decryptedData); // Log decrypted data for debugging
+
+        // Return the decrypted data along with certificate
+        return {
+            ...sertifikat,
+            data_decrypted: decryptedData,
+        };
+    } catch (err) {
+        // Log the error with more context
+        console.error('Error:', err.message); // Log the actual error for debugging
+        throw new Error(`Error retrieving certificate by hash: ${err.message}`);
+    }
+};
+
+
 module.exports = {
     createSertifikat,
     getCountSertifikatByUserId,
     getAllSertifikatByUserId,
     getHistoryOwnershipCertificate,
+    getSertifikatByHash,
 }

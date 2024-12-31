@@ -26,4 +26,5 @@ app.use('/notif', NotifRoute)
 app.use('/sertifikat',SertifikatRoute)
 
 
+
 module.exports = app;
