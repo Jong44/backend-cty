@@ -17,4 +17,6 @@ router.post('/', upload.fields([{ name: 'sertifikat', maxCount: 1 }, { name: 'kt
 
 router.get('/user/:userId', SertifikatController.getAllSertifikatByUserId);
 
+router.post('/create', SertifikatController.createTransactionCertificate);
+
 module.exports = router;

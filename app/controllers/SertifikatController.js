@@ -95,3 +95,23 @@ exports.getAllSertifikatByUserId = async (req, res) => {
         res.status(500).json(response);
     }
 }
+
+exports.createTransactionCertificate = async (req, res) => {
+    try {
+        const { newOwner, fingerprintSertificate, currentOwnerApproval } = req.body;
+
+        if (!newOwner || !fingerprintSertificate || !currentOwnerApproval) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        const result = await sertifikatService.createTransactionCertificate({
+            newOwner,
+            fingerprintSertificate,
+            currentOwnerApproval,
+        });
+
+        res.status(201).json({ message: 'Transaction certificate created successfully', result });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
