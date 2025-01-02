@@ -220,7 +220,13 @@ const getAllSertifikatByUserId = async (userId) => {
     return finalData;
 }
 
-const createTransaksiSertifikat = async ({ newOwner, fingerprintSertificate, currentOwnerApproval }) => {
+const createTransaksiSertifikat = async ({ 
+    nama,
+    email,
+    nik,
+    alamat,
+    fingerprintSertificate,
+}) => {
     // 1. Validate certificate fingerprint and retrieve the corresponding certificate
     const { data: sertifikat, error: certError } = await supabase
         .from('node')
@@ -255,7 +261,7 @@ const createTransaksiSertifikat = async ({ newOwner, fingerprintSertificate, cur
     if ( error || !currentCertificate) {
         throw new Error('Certificate not found');
     }
-    const data_decrypted = decrryptData(currentCertificate.data_encrypted, currentCertificate.encrypted_key);
+    const data_decrypted = decryptData(currentCertificate.data_encrypted, currentCertificate.encrypted_key);
     const currentData = {
         hash: currentCertificate.hash,
         created_at: currentCertificate.created_at,
@@ -282,13 +288,10 @@ const createTransaksiSertifikat = async ({ newOwner, fingerprintSertificate, cur
 
     const newCertificateData = {
         ...decryptedData,
-        newOwner,
-        transactionDate: new Date().toISOString(),
-        nama: sertifikat.nama, 
-        email: sertifikat.email,
-        no_hp: sertifikat.no_hp,
-        alamat: sertifikat.alamat,
-        nik: sertifikat.nik,
+        nama,
+        email,
+        nik,
+        alamat,
     };
 
     const encryptedNewData = Buffer.concat([cipherNew.update(JSON.stringify(newCertificateData)), cipherNew.final()]);

@@ -120,16 +120,23 @@ exports.getAllSertifikatByUserId = async (req, res) => {
 
 exports.createTransactionCertificate = async (req, res) => {
     try {
-        const { newOwner, fingerprintSertificate, currentOwnerApproval } = req.body;
+        const { 
+            nama,
+            email, 
+            nik,
+            alamat,
+            fingerprintSertificate} = req.body;
 
         if (!newOwner || !fingerprintSertificate || !currentOwnerApproval) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        const result = await sertifikatService.createTransactionCertificate({
-            newOwner,
+        const result = await sertifikatService.createTransaksiSertifikat({
+            nama,
+            email,
+            nik,
+            alamat,
             fingerprintSertificate,
-            currentOwnerApproval,
         });
 
         res.status(201).json({ message: 'Transaction certificate created successfully', result });
