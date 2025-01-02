@@ -220,9 +220,105 @@ const getAllSertifikatByUserId = async (userId) => {
     return finalData;
 }
 
+const createTransaksiSertifikat = async ({ newOwner, fingerprintSertificate, currentOwnerApproval }) => {
+    // 1. Validate certificate fingerprint and retrieve the corresponding certificate
+    const { data: sertifikat, error: certError } = await supabase
+        .from('node')
+        .select('*')
+        .eq('fingerprint', fingerprintSertificate)
+        .single();
+
+    if (certError || !sertifikat) {
+        throw new Error('Certificate not found');
+    }
+
+    // 2. Decrypt previous certificate to verify its content
+    const [iv, encryptedData] = sertifikat.data_encrypted.split(':');
+    const decipher = crypto.createDecipheriv('aes-256-ctr', Buffer.from(sertifikat.encrypted_key, 'hex'), Buffer.from(iv, 'hex'));
+    const decryptedData = JSON.parse(
+        Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]).toString()
+    );
+
+    // 3. Verify current owner approval
+    if (!currentOwnerApproval || currentOwnerApproval !== decryptedData.nama) {
+        throw new Error('Current owner approval is required');
+    }
+
+    // cek hash prev
+    //FETCHING CURRENT CERTIFICATE AND LINKED PREV CERTIFICATE
+    const { data : currentCertificate, error} = await supabase
+        .from('node')            
+        .select('*')
+        .eq('hash', hash)
+        .single();
+
+    if ( error || !currentCertificate) {
+        throw new Error('Certificate not found');
+    }
+    const data_decrypted = decrryptData(currentCertificate.data_encrypted, currentCertificate.encrypted_key);
+    const currentData = {
+        hash: currentCertificate.hash,
+        created_at: currentCertificate.created_at,
+        name: data_decrypted.nama,
+        type: data_decrypted.type ? data_decrypted.type : 'Pembuat',
+    }
+
+    // BUILD HISTORY LINKEDLIST
+    let history = [];
+    let currentHash = currentCertificate.hash_prev;
+    while (currentHash) {
+        const { data: previousCertificate, error: prevError} = await supabase
+            .from('node')            
+            .select('*')
+            .eq('hash', currentHash)
+            .single();
+            if (prevError || !previousCertificate) break;
+    }
+
+    // 4. Create a new certificate with tracking history
+    const ivNew = crypto.randomBytes(16);
+    const keyNew = crypto.randomBytes(32).toString('hex');
+    const cipherNew = crypto.createCipheriv('aes-256-ctr', Buffer.from(keyNew, 'hex'), ivNew);
+
+    const newCertificateData = {
+        ...decryptedData,
+        newOwner,
+        transactionDate: new Date().toISOString(),
+        nama: sertifikat.nama, 
+        email: sertifikat.email,
+        no_hp: sertifikat.no_hp,
+        alamat: sertifikat.alamat,
+        nik: sertifikat.nik,
+    };
+
+    const encryptedNewData = Buffer.concat([cipherNew.update(JSON.stringify(newCertificateData)), cipherNew.final()]);
+    const encryptedNewDataString = ivNew.toString('hex') + ':' + encryptedNewData.toString('hex');
+    const hashNew = crypto.createHash('sha256').update(encryptedNewDataString).digest('hex');
+
+    const newNode = {
+        hash_prev: sertifikat.hash,
+        fingerprint: crypto.createHash('sha256').update(JSON.stringify(newCertificateData)).digest('hex'),
+        data_encrypted: encryptedNewDataString,
+        encrypted_key: keyNew,
+        hash: hashNew,
+        user_id: newOwner.id,
+        created_at: new Date().toISOString(),
+    };
+
+    // 5. Store updated certificate data in a linked-list structure
+    const { data: newCert, error: insertError } = await supabase.from('node').insert([newNode]);
+
+    if (insertError) {
+        throw new Error('Failed to store the updated certificate: ' + insertError.message);
+    }
+
+    return newCert;
+};
+
 module.exports = {
     createSertifikat,
     getCountSertifikatByUserId,
     getAllSertifikatByUserId,
+    createTransaksiSertifikat,
     getHistoryOwnershipCertificate,
 }
