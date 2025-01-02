@@ -8,6 +8,8 @@ const NodeRoute = require('./route/NodeRoute');
 const NotifRoute = require('./route/NotifRoute');
 const SertifikatRoute = require('./route/SertifikatRoute');
 const UploadRoute = require('./route/UploadRoute');
+const TransaksiRoute = require('./route/TransaksiRoute');
+
 
 const cors = require('cors');
 
@@ -26,6 +28,7 @@ app.use('/node', NodeRoute)
 app.use('/notif', NotifRoute)
 app.use('/sertifikat',SertifikatRoute)
 app.use('/api', UploadRoute);
+app.use('/draft',TransaksiRoute);
 
 
 
