@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { text } = require('body-parser');
 
+
 const client = new vision.ImageAnnotatorClient({
     credentials: {
         client_email: process.env.GOOGLE_APPLICATION_CREDENTIALS_CLIENT_EMAIL,
@@ -19,6 +20,15 @@ const recognizeSertifikat = async (file) => {
         },
     });
     const detections = result.textAnnotations;
+
+    if (!detections.length) {
+        return {
+            id: "Tidak Ditemukan",
+            luas: "Tidak Ditemukan",
+            pemegangHak: "Tidak Ditemukan",
+            alamat: "Tidak Ditemukan",
+        }
+    }
 
     const extractedText = detections[0].description;
 
@@ -53,6 +63,13 @@ const recoginzeKTP = async (file) => {
   const detections = result.textAnnotations;
 
     const extractedText = detections[0].description;
+
+    if (!detections.length) {
+        return {
+            nik: "Tidak Ditemukan",
+            nama: "Tidak Ditemukan",
+        }
+    }
 
     const nikPattern = /KABUPATEN[\s\S]+?(\d{16})/;
     const namaPattern =/(\d{16})\s+([A-Za-z\s]+)(?=\n)/;

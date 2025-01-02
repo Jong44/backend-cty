@@ -331,15 +331,12 @@ const getSertifikatByHash = async (hash) => {
             throw new Error('Certificate not found or error fetching data');
         }
 
-        console.log('Certificate Data:', sertifikat); // Log for debugging
 
         // Check if encrypted data and key exist and are valid
         if (!sertifikat.data_encrypted || !sertifikat.encrypted_key) {
             throw new Error('Encrypted data or key is missing or invalid');
         }
 
-        console.log('Data Encrypted:', sertifikat.data_encrypted);
-        console.log('Encrypted Key:', sertifikat.encrypted_key);
 
         // Decrypt the data
         const decryptedData = decryptData(sertifikat.data_encrypted, sertifikat.encrypted_key);
@@ -348,8 +345,7 @@ const getSertifikatByHash = async (hash) => {
         sertifikat.data_encrypted = 'hidden';
         sertifikat.encrypted_key = 'hidden';
 
-        console.log('Decrypted Data:', decryptedData);
-        console.log('url', decryptedData.file_ktp?.data?.publicUrl)
+
 
         // Encrypt the URLs for sensitive data
         decryptedData.file_ktp = encryptURL(String(decryptedData.file_ktp?.data?.publicUrl || ''));
@@ -357,7 +353,6 @@ const getSertifikatByHash = async (hash) => {
 
 
         // Tampilan data yang berhasil didekripsi
-        console.log('Decrypted Data:', decryptedData); // Log decrypted data for debugging
 
         // Return the decrypted data along with certificate
         return {
