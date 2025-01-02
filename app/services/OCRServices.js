@@ -4,6 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const { text } = require('body-parser');
 
+const dotenv = require('dotenv');
+dotenv.config();
 
 const client = new vision.ImageAnnotatorClient({
     credentials: {
