@@ -137,3 +137,43 @@ exports.createTransactionCertificate = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getSertifikatByHash = async (req, res) => {
+    try {
+        const { hash } = req.params;
+
+        // Log untuk debugging
+        console.log('Hash yang diterima:', hash);  // Pastikan hash ada
+
+        if (!hash) {
+            return res.status(400).json({ 
+                status: 'error', 
+                message: 'Hash is required' 
+            });
+        }
+
+        const sertifikat = await sertifikatService.getSertifikatByHash(hash);
+
+        // Mengecek hasil sebelum mengirim response
+        console.log('Sertifikat ditemukan:', sertifikat);
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Certificate retrieved successfully',
+            data: sertifikat,
+        });
+    } catch (error) {
+        console.error('Error while retrieving certificate:', error); // Log error untuk membantu debugging
+        res.status(500).json({
+            status: 'error',
+            message: `Error retrieving certificate by hash: ${error.message}`,
+        });
+    }
+};
+
+
+
+
+
+
+
