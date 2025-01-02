@@ -28,4 +28,5 @@ app.use('/sertifikat',SertifikatRoute)
 app.use('/api', UploadRoute);
 
 
+
 module.exports = app;

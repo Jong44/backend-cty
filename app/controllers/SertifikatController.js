@@ -25,7 +25,7 @@ exports.createSertifikat = async (req, res) => {
             nik: req.body.nik,    
             sertifikat: req.files.sertifikat,
             ktp: req.files.ktp,
-            user_id: req.body.uuid,
+            uuid: req.body.uuid,
         }
         const data = await sertifikatService.createSertifikat(payload);
         response = {
@@ -117,3 +117,58 @@ exports.getAllSertifikatByUserId = async (req, res) => {
         res.status(500).json(response);
     }
 }
+
+exports.createTransactionCertificate = async (req, res) => {
+    try {
+        const { newOwner, fingerprintSertificate, currentOwnerApproval } = req.body;
+
+        if (!newOwner || !fingerprintSertificate || !currentOwnerApproval) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        const result = await sertifikatService.createTransactionCertificate({
+            newOwner,
+            fingerprintSertificate,
+            currentOwnerApproval,
+        });
+
+        res.status(201).json({ message: 'Transaction certificate created successfully', result });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getSertifikatByHash = async (req, res) => {
+    try {
+        const hash = req.params.hash;
+
+        // Log untuk debugging
+
+        if (!hash) {
+            return res.status(400).json({ 
+                status: 'error', 
+                message: 'Hash is required' 
+            });
+        }
+
+        const sertifikat = await sertifikatService.getSertifikatByHash(hash);
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Certificate retrieved successfully',
+            data: sertifikat,
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: `Error retrieving certificate by hash: ${error.message}`,
+        });
+    }
+};
+
+
+
+
+
+
+
