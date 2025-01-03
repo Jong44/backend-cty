@@ -74,6 +74,7 @@ exports.createNotif = async (req, res) => {
         const payload = {
             message: req.body.message,
             is_read: false,
+            uuid: req.body.uuid,
             created_at: new Date()
         }
         const data = await NotifServices.createNotif(payload);
