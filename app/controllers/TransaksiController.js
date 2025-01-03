@@ -91,7 +91,7 @@ exports.createDraftTransaction = async (req, res) => {
     try {
         console.log('Request Body:', req.body);
 
-        if (!req.body.uuid_pengirim || !req.body.uuid_penerima || !req.body.nama || !req.body.email || !req.body.alamat || !req.body.fingerprintSertificate) {
+        if (!req.body.uuid_pengirim || !req.body.nama || !req.body.email || !req.body.alamat || !req.body.fingerprintSertificate) {
             console.error('Validation failed:', req.body);
             response = {
                 status: "error",
@@ -104,7 +104,6 @@ exports.createDraftTransaction = async (req, res) => {
 
         const payload = {
             uuid_pengirim: req.body.uuid_pengirim,
-            uuid_penerima: req.body.uuid_penerima,
             nama_penerima: req.body.nama,
             email: req.body.email,
             alamat: req.body.alamat,
