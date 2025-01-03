@@ -19,6 +19,6 @@ router.get('/hash/:hash', SertifikatController.getSertifikatByHash);
 router.post('/', upload.fields([{ name: 'sertifikat', maxCount: 1 }, { name: 'ktp', maxCount: 1 }]), SertifikatController.createSertifikat);
 
 router.get('/user/:userId', SertifikatController.getAllSertifikatByUserId);
-router.post('/transaksi/create', SertifikatController.createTransactionCertificate);
+router.post('/transaksi', SertifikatController.createTransactionCertificate);
 
 module.exports = router;

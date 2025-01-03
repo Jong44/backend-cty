@@ -125,9 +125,9 @@ exports.createTransactionCertificate = async (req, res) => {
             email, 
             nik,
             alamat,
-            fingerprintSertificate} = req.body;
+            fingerprintSertificate, uuid} = req.body;
 
-        if (!newOwner || !fingerprintSertificate || !currentOwnerApproval) {
+        if (!nama || !email || !nik || !alamat || !fingerprintSertificate) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
@@ -136,6 +136,7 @@ exports.createTransactionCertificate = async (req, res) => {
             email,
             nik,
             alamat,
+            uuid,
             fingerprintSertificate,
         });
 

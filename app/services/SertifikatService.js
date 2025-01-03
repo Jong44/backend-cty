@@ -192,7 +192,7 @@ const getHistoryOwnershipCertificate = async (hash) => {
 const getAllSertifikatByUserId = async (userId) => {
     const algorithm = 'aes-256-ctr';
     // mengambil data dari table node berdasarkan user_id
-    const {data, error} = await supabase.from('node').select('*').eq('uuid', userId);
+    const {data, error} = await supabase.from('node').select('*').eq('uuid', userId).eq('is_owner', true);k0000000000000000
 
     // jika terjadi error, maka akan melempar error
     if (error) throw new Error(error.message);
@@ -225,6 +225,7 @@ const createTransaksiSertifikat = async ({
     email,
     nik,
     alamat,
+    uuid,
     fingerprintSertificate,
 }) => {
     // 1. Validate certificate fingerprint and retrieve the corresponding certificate
@@ -245,17 +246,12 @@ const createTransaksiSertifikat = async ({
         Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]).toString()
     );
 
-    // 3. Verify current owner approval
-    if (!currentOwnerApproval || currentOwnerApproval !== decryptedData.nama) {
-        throw new Error('Current owner approval is required');
-    }
-
     // cek hash prev
     //FETCHING CURRENT CERTIFICATE AND LINKED PREV CERTIFICATE
     const { data : currentCertificate, error} = await supabase
         .from('node')            
         .select('*')
-        .eq('hash', hash)
+        .eq('hash', sertifikat.hash)
         .single();
 
     if ( error || !currentCertificate) {
@@ -281,6 +277,11 @@ const createTransaksiSertifikat = async ({
             if (prevError || !previousCertificate) break;
     }
 
+    // 3. Update field is_owner in the previous certificate
+    const { data: updateResult, error: updateError } = await supabase.from('node').update({
+        is_owner: false,
+    }).eq('hash', sertifikat.hash);
+
     // 4. Create a new certificate with tracking history
     const ivNew = crypto.randomBytes(16);
     const keyNew = crypto.randomBytes(32).toString('hex');
@@ -304,7 +305,7 @@ const createTransaksiSertifikat = async ({
         data_encrypted: encryptedNewDataString,
         encrypted_key: keyNew,
         hash: hashNew,
-        user_id: newOwner.id,
+        uuid: uuid,
         created_at: new Date().toISOString(),
     };
 
