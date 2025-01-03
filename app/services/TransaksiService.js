@@ -2,7 +2,6 @@ const supabase = require('../config/configSupabase');
 
 const createDraftTransaction = async (transaksi_draft) => {
     const {data, error} = await supabase.from('transaksi_draft').insert(transaksi_draft);
-
     if (error) throw new Error(error.message);
     return data;
 }
@@ -22,11 +21,19 @@ const getDraftTransactionById = async (id) => {
 }
 
 const getDraftTransactionByUserId = async (idUser) => {
-    const {data, error} = await supabase.from('transaksi_draft').select('*').eq('uuid_pengirim' || 'uuid_penerima', idUser);
+    const {data, error} = await supabase.from('transaksi_draft').select('*').eq('uuid_penerima', idUser);
 
     if (error) throw new Error(error.message);
     return data;
 }
+
+const getDraftByEmail = async (email) => {
+    const {data, error} = await supabase.from('transaksi_draft').select('*').eq('email', email);
+
+    if (error) throw new Error(error.message);
+    return data;
+}
+
 
 const deleteDraftTransaction = async (id) => {
     const {data, error} = await supabase.from('transaksi_draft').delete().eq('transaksi_id', id);
@@ -62,5 +69,6 @@ module.exports = {
     getDraftTransactionById,
     getDraftTransactionByUserId,
     deleteDraftTransaction,
+    getDraftByEmail,
 }
 

@@ -127,7 +127,7 @@ exports.createTransactionCertificate = async (req, res) => {
             alamat,
             fingerprintSertificate, uuid} = req.body;
 
-        if (!nama || !email || !nik || !alamat || !fingerprintSertificate) {
+        if (!nama || !email || !nik || !alamat || !fingerprintSertificate || !uuid) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 

@@ -91,7 +91,7 @@ exports.createDraftTransaction = async (req, res) => {
     try {
         console.log('Request Body:', req.body);
 
-        if (!req.body.uuid_pengirim || !req.body.uuid_penerima) {
+        if (!req.body.uuid_pengirim || !req.body.uuid_penerima || !req.body.nama || !req.body.email || !req.body.alamat || !req.body.fingerprintSertificate) {
             console.error('Validation failed:', req.body);
             response = {
                 status: "error",
@@ -105,13 +105,16 @@ exports.createDraftTransaction = async (req, res) => {
         const payload = {
             uuid_pengirim: req.body.uuid_pengirim,
             uuid_penerima: req.body.uuid_penerima,
+            nama_penerima: req.body.nama,
+            email: req.body.email,
+            alamat: req.body.alamat,
+            nik: req.body.nik,
+            fingerprint: req.body.fingerprintSertificate,
             status: false,
             created_at: new Date()
         }
-        console.log('Payload:', payload);
 
         const data = await DraftTransactionServices.createDraftTransaction(payload);
-        console.log('Service Response:', data);
 
         response = {
             status: "success",
@@ -147,3 +150,32 @@ exports.deleteDraftTransaction = async (req, res) => {
         res.status(500).json(response);
     }
 }
+
+exports.getDraftTransactionByEmailAddress = async (req, res) => {
+    const email = req.body.email;
+    try {
+        const data = await DraftTransactionServices.getDraftByEmail(email);
+        if (data.length === 0) {
+            response = {
+                status: "success",
+                message: "No Draft Transaction found",
+                data: null
+            }
+        } else {
+            response = {
+                status: "success",
+                message: "Draft Transaction found",
+                data: data
+            }
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        response = {
+            status: "error",
+            message: error.message,
+            data: []
+        }
+        res.status(500).json(response);
+    }
+}
+

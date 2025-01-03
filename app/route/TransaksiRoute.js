@@ -9,5 +9,6 @@ router.get('/', DraftTransactionController.getAllDraftTransaction);//done
 router.get('/:id', DraftTransactionController.getDraftTransactionById);//done
 router.get('/user/:idUser', DraftTransactionController.getDraftTransactionByUserId);//done
 router.delete('/:id', DraftTransactionController.deleteDraftTransaction);//done
+router.post('/email', DraftTransactionController.getDraftTransactionByEmailAddress);//done
 
 module.exports = router;

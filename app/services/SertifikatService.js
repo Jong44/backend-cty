@@ -192,7 +192,7 @@ const getHistoryOwnershipCertificate = async (hash) => {
 const getAllSertifikatByUserId = async (userId) => {
     const algorithm = 'aes-256-ctr';
     // mengambil data dari table node berdasarkan user_id
-    const {data, error} = await supabase.from('node').select('*').eq('uuid', userId).eq('is_owner', true);k0000000000000000
+    const {data, error} = await supabase.from('node').select('*').eq('uuid', userId).eq('is_owner', true);
 
     // jika terjadi error, maka akan melempar error
     if (error) throw new Error(error.message);
